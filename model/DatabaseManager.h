@@ -1,3 +1,5 @@
+// Implementation logic for Database Management
+
 #ifndef DATABASEMANAGER_H
 #define DATABASEMANAGER_H
 
@@ -10,6 +12,7 @@
 class DatabaseManager
 {
 public:
+
     // This function sets up the connection
     void openDatabase()
     {
