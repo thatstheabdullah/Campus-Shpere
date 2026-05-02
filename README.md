@@ -8,7 +8,7 @@ Section: BSSE-2A | Team #02
 | Team Lead | Abdullah Hassan Butt | 25L-3039 |
 | Database Layer | Salman Baloch | 25L-3081 |
 | Feed & Posts Module | Hisham Ahmed | 25L-3033 |
-| UI & Authentication | Abeeha Warda | 25L-3073 |
+| User Authentication | Abeeha Warda | 25L-3073 |
 | Messages & Friends | Zain ul Abidin | 25L-3102 |
 
 ## Features
