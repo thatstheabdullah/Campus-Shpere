@@ -1,8 +1,7 @@
 #include "mainwindow.h"
 
-// ════════════════════════════════════════════════════════════════
+
 //  THEME  –  called every time dark/light is toggled
-// ════════════════════════════════════════════════════════════════
 void MainWindow::applyFullTheme()
 {
     // ... [Palette code stays the same] ...
@@ -20,14 +19,14 @@ void MainWindow::applyFullTheme()
 
 
 
-    // ── Per-widget restyles ──────────────────────────────────────
+    // ─ Per-widget restyles ─
 
     if (sidebarFrame)
         sidebarFrame->setStyleSheet(
             QString("QFrame { background:%1; border-right:1px solid %2; border-radius:0; }")
                 .arg(card(), bor()));
 
-    // FIX: sidebar logo text always uses txt() so it is visible in both modes
+    //  sidebar logo text always uses txt() so it is visible in both modes
     if (sidebarLogoText)
         sidebarLogoText->setStyleSheet(
             QString("color:%1; font-size:15px; font-weight:700;"
@@ -75,7 +74,7 @@ void MainWindow::applyFullTheme()
                     "border-bottom:1px solid %3; border-radius:0;")
                 .arg(txt(), card(), bor()));
 
-    // FIX: contacts list item colour explicitly uses txt() so names show in light mode
+
     if (contactsList)
         contactsList->setStyleSheet(
             QString("QListWidget { background:transparent; border:none; color:%1; }"
@@ -89,9 +88,7 @@ void MainWindow::applyFullTheme()
     if (msgInput) msgInput->setStyleSheet(FS());
 }
 
-// ════════════════════════════════════════════════════════════════
 //  CONSTRUCTOR
-// ════════════════════════════════════════════════════════════════
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
     setWindowTitle("CampusSphere");
@@ -124,9 +121,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
 MainWindow::~MainWindow() {}
 
-// ════════════════════════════════════════════════════════════════
 //  DATABASE
-// ════════════════════════════════════════════════════════════════
+
 void MainWindow::initDatabase()
 {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
@@ -188,9 +184,7 @@ void MainWindow::logActivity(const QString &action)
     q.exec();
 }
 
-// ════════════════════════════════════════════════════════════════
 //  NAVIGATION
-// ════════════════════════════════════════════════════════════════
 void MainWindow::showLogin()  { stack->setCurrentIndex(0); }
 void MainWindow::showSignup() { stack->setCurrentIndex(1); }
 void MainWindow::showFeed()   { stack->setCurrentIndex(2); showPanel(0); }
@@ -217,9 +211,7 @@ void MainWindow::toggleDarkMode()
     showPanel(contentStack->currentIndex());
 }
 
-// ════════════════════════════════════════════════════════════════
 //  LOGIN PAGE
-// ════════════════════════════════════════════════════════════════
 QWidget* MainWindow::buildLoginPage()
 {
     auto *pg  = new QWidget;
@@ -417,9 +409,8 @@ void MainWindow::onLoginClicked()
     showFeed();
 }
 
-// ════════════════════════════════════════════════════════════════
+
 //  SIGNUP PAGE
-// ════════════════════════════════════════════════════════════════
 QWidget* MainWindow::buildSignupPage()
 {
     auto *pg  = new QWidget;
@@ -586,16 +577,15 @@ void MainWindow::onSignupClicked()
     }
 }
 
-// ════════════════════════════════════════════════════════════════
+
 //  MAIN SHELL  (sidebar + content stack)
-// ════════════════════════════════════════════════════════════════
 QWidget* MainWindow::buildFeedPage()
 {
     auto *pg   = new QWidget;
     auto *root = new QHBoxLayout(pg);
     root->setContentsMargins(0, 0, 0, 0); root->setSpacing(0);
 
-    // ── Sidebar ──────────────────────────────────────────────────
+    // ─ Sidebar ─
     sidebarFrame = new QFrame;
     sidebarFrame->setFixedWidth(220);
     sidebarFrame->setStyleSheet(
@@ -612,7 +602,7 @@ QWidget* MainWindow::buildFeedPage()
     logoIcon->setPixmap(makeAvatar("C", 32, acc()));
     logoIcon->setStyleSheet("border:none; background:transparent;");
 
-    // FIX: use member pointer so applyFullTheme() can restyle it on toggle
+    // use member pointer so applyFullTheme() can restyle it on toggle
     sidebarLogoText = new QLabel("CampusSphere");
     sidebarLogoText->setStyleSheet(
         QString("color:%1; font-size:15px; font-weight:700;"
@@ -671,7 +661,7 @@ QWidget* MainWindow::buildFeedPage()
     connect(logoutBtn, &QPushButton::clicked, this, &MainWindow::onLogoutClicked);
     sl->addWidget(logoutBtn);
 
-    // ── Content area ─────────────────────────────────────────────
+    // ─ Content area ─
     contentStack = new QStackedWidget;
     contentStack->addWidget(buildFeedPanel());      // 0
     contentStack->addWidget(buildFriendsPanel());   // 1
@@ -683,9 +673,8 @@ QWidget* MainWindow::buildFeedPage()
     return pg;
 }
 
-// ════════════════════════════════════════════════════════════════
+
 //  FEED PANEL
-// ════════════════════════════════════════════════════════════════
 QWidget* MainWindow::buildFeedPanel()
 {
     auto *panel = new QWidget;
@@ -695,13 +684,13 @@ QWidget* MainWindow::buildFeedPanel()
     // Top bar
     auto *topBar = new QFrame;
     topBar->setFixedHeight(56);
-    topBar->setObjectName("topBar"); // <--- Replaces the inline stylesheet
+    topBar->setObjectName("topBar");
 
     auto *tbl = new QHBoxLayout(topBar);
     tbl->setContentsMargins(24, 0, 24, 0);
 
     auto *feedTitle = new QLabel("Home");
-    // <--- Removed 'color:%1;'
+
     feedTitle->setStyleSheet("font-size:16px; font-weight:700; background:transparent; border:none;");
     tbl->addWidget(feedTitle); tbl->addStretch();
 
@@ -710,13 +699,12 @@ QWidget* MainWindow::buildFeedPanel()
     scroll->setWidgetResizable(true);
     scroll->setStyleSheet("QScrollArea { border:none; background:transparent; }");
     auto *content = new QWidget;
-    // <--- DELETED THIS LINE: content->setStyleSheet(QString("background:%1;").arg(bg()));
     auto *contentLay = new QVBoxLayout(content);
     contentLay->setContentsMargins(24, 20, 24, 20); contentLay->setSpacing(12);
 
     // Compose box
     auto *comp = new QFrame;
-    comp->setObjectName("cardFrame"); // <--- Replaces the inline stylesheet
+    comp->setObjectName("cardFrame");
 
     auto *cl = new QVBoxLayout(comp);
     cl->setContentsMargins(16, 14, 16, 14); cl->setSpacing(10);
@@ -774,8 +762,6 @@ QWidget* MainWindow::buildFeedPanel()
 
     // Feed list area
     auto *feedWidget = new QWidget;
-    // <--- DELETE THIS LINE: feedWidget->setStyleSheet(QString("background:%1;").arg(bg()));
-
     feedLayout = new QVBoxLayout(feedWidget);
     feedLayout->setSpacing(8); feedLayout->setAlignment(Qt::AlignTop);
 
@@ -974,7 +960,7 @@ void MainWindow::addPostCard(int pid, const QString &author, const QString &text
     }
     lay->addWidget(actBar);
 
-    // ── Comment section (hidden until toggled) ────────────────
+    // ─ Comment section (hidden until toggled) ─
     auto *cmtSec = new QFrame;
     cmtSec->setStyleSheet(
         QString("QFrame { background:%1; border-radius:8px; border:none; }").arg(card2()));
@@ -1087,9 +1073,8 @@ void MainWindow::onLogoutClicked()
     refreshCaptcha(); showLogin();
 }
 
-// ════════════════════════════════════════════════════════════════
+
 //  FRIENDS PANEL
-// ════════════════════════════════════════════════════════════════
 QWidget* MainWindow::buildFriendsPanel()
 {
     auto *panel = new QWidget;
@@ -1098,12 +1083,11 @@ QWidget* MainWindow::buildFriendsPanel()
 
     // Top bar
     auto *topBar = new QFrame; topBar->setFixedHeight(56);
-    topBar->setObjectName("topBar"); // <--- Replaces the inline stylesheet
+    topBar->setObjectName("topBar");
 
     auto *tbl = new QHBoxLayout(topBar); tbl->setContentsMargins(24, 0, 24, 0);
     auto *title = new QLabel("Friends");
 
-    // Remove 'color:%1;' so it inherits from the global QLabel style
     title->setStyleSheet("font-size:16px; font-weight:700; background:transparent; border:none;");
 
     // Scroll area
@@ -1111,25 +1095,20 @@ QWidget* MainWindow::buildFriendsPanel()
     scroll->setStyleSheet("QScrollArea { border:none; background:transparent; }");
 
     auto *content = new QWidget;
-    // <--- DELETE the content->setStyleSheet(QString("background:%1;").arg(bg())); line completely.
-    // The global "QWidget" rule will automatically give it the correct background.
-
     auto *cl = new QVBoxLayout(content);
 
-    // ── Find Students card ────────────────────────────────────
+    // ─ Find Students card ──
     auto *sc  = new QFrame;
-    sc->setObjectName("cardFrame"); // <--- Replaces the inline stylesheet
+    sc->setObjectName("cardFrame");
 
     auto *scl = new QVBoxLayout(sc);
-    // ...
+
     auto *sttl = new QLabel("Find Students");
     sttl->setStyleSheet("font-size:14px; font-weight:700; background:transparent; border:none;"); // <--- Removed color
 
     searchInput = new QLineEdit;
     searchInput->setPlaceholderText("Search by username...");
     searchInput->setMinimumHeight(40);
-    // <--- DELETE searchInput->setStyleSheet(FS());
-    // Your global QLineEdit stylesheet is identical to FS() and will handle it natively.
     connect(searchInput, &QLineEdit::textChanged, this, &MainWindow::onSearchChanged);
 
     auto *resW = new QWidget; resW->setStyleSheet("background:transparent;");
@@ -1143,27 +1122,27 @@ QWidget* MainWindow::buildFriendsPanel()
 
     scl->addWidget(sttl); scl->addWidget(searchInput); scl->addWidget(resScroll);
 
-    // ── Pending Requests card ─────────────────────────────────
+    // ─ Pending Requests card ─
     auto *pc  = new QFrame;
-    pc->setObjectName("cardFrame"); // <--- Replaces the inline stylesheet
+    pc->setObjectName("cardFrame");
 
     auto *pcl = new QVBoxLayout(pc);
     // ...
     auto *pttl = new QLabel("Pending Requests");
-    pttl->setStyleSheet("font-size:14px; font-weight:700; background:transparent; border:none;"); // <--- Removed color
+    pttl->setStyleSheet("font-size:14px; font-weight:700; background:transparent; border:none;");
     pcl->addWidget(pttl);
     pendingLayout = new QVBoxLayout;
     pendingLayout->setAlignment(Qt::AlignTop); pendingLayout->setSpacing(6);
     pcl->addLayout(pendingLayout);
 
-    // ── My Friends card ───────────────────────────────────────
+    // ─ My Friends card ─
     auto *fc  = new QFrame;
-    fc->setObjectName("cardFrame"); // <--- Replaces the inline stylesheet
+    fc->setObjectName("cardFrame");
 
     auto *fcl = new QVBoxLayout(fc);
     // ...
     auto *fttl = new QLabel("My Friends");
-    fttl->setStyleSheet("font-size:14px; font-weight:700; background:transparent; border:none;"); // <--- Removed color
+    fttl->setStyleSheet("font-size:14px; font-weight:700; background:transparent; border:none;");
     fcl->addWidget(fttl);
     friendsLayout = new QVBoxLayout;
     friendsLayout->setAlignment(Qt::AlignTop); friendsLayout->setSpacing(6);
@@ -1175,7 +1154,7 @@ QWidget* MainWindow::buildFriendsPanel()
     return panel;
 }
 
-// FIX: all labels explicitly styled with txt() so they're readable in light mode
+
 void MainWindow::onSearchChanged(const QString &text)
 {
     QLayoutItem *it;
@@ -1341,16 +1320,16 @@ void MainWindow::loadFriends()
     }
 }
 
-// ════════════════════════════════════════════════════════════════
+
 //  MESSAGES PANEL
-// ════════════════════════════════════════════════════════════════
+
 QWidget* MainWindow::buildMessagesPanel()
 {
     auto *panel = new QWidget;
     auto *lay   = new QHBoxLayout(panel);
     lay->setContentsMargins(0, 0, 0, 0); lay->setSpacing(0);
 
-    // ── Contacts sidebar ─────────────────────────────────────────
+    // ─ Contacts sidebar ─
     msgSidebar = new QFrame; msgSidebar->setFixedWidth(260);
     msgSidebar->setStyleSheet(
         QString("QFrame { background:%1; border-right:1px solid %2; border-radius:0; }")
@@ -1359,12 +1338,11 @@ QWidget* MainWindow::buildMessagesPanel()
     csl->setContentsMargins(0, 0, 0, 0); csl->setSpacing(0);
 
     auto *msHeader = new QFrame; msHeader->setFixedHeight(56);
-    msHeader->setObjectName("topBar"); // <--- Replaces the inline stylesheet
+    msHeader->setObjectName("topBar");
 
     auto *mshl = new QHBoxLayout(msHeader); mshl->setContentsMargins(16, 0, 16, 0);
     auto *msTtl = new QLabel("Messages");
 
-    // <--- Removed 'color:%1;'
     msTtl->setStyleSheet("font-size:15px; font-weight:700; background:transparent; border:none;");
 
     mshl->addWidget(msTtl);
@@ -1382,9 +1360,9 @@ QWidget* MainWindow::buildMessagesPanel()
     connect(contactsList, &QListWidget::itemClicked, this, &MainWindow::onContactSelected);
     csl->addWidget(contactsList);
 
-    // ── Chat area ────────────────────────────────────────────────
+    // ── Chat area ─
     auto *chatArea = new QWidget;
-    // <--- DELETE THIS LINE: chatArea->setStyleSheet(QString("background:%1;").arg(bg()));
+
     auto *cl = new QVBoxLayout(chatArea);
     cl->setContentsMargins(0, 0, 0, 0); cl->setSpacing(0);
 
@@ -1524,10 +1502,8 @@ void MainWindow::onSendMessage()
     if (q.exec()) { msgInput->clear(); loadChat(chatWith); }
 }
 
-// ════════════════════════════════════════════════════════════════
+
 //  PROFILE PANEL
-//  FIX: avatar is now placed BELOW the banner, properly centred
-// ════════════════════════════════════════════════════════════════
 QWidget* MainWindow::buildProfilePanel()
 {
     auto *panel = new QWidget;
@@ -1536,12 +1512,11 @@ QWidget* MainWindow::buildProfilePanel()
 
     // Top bar
     auto *topBar = new QFrame; topBar->setFixedHeight(56);
-    topBar->setObjectName("topBar"); // <--- Replaces the inline stylesheet
+    topBar->setObjectName("topBar");
 
     auto *tbl = new QHBoxLayout(topBar); tbl->setContentsMargins(24, 0, 24, 0);
     auto *title = new QLabel("Profile");
 
-    // <--- Removed 'color:%1;'
     title->setStyleSheet("font-size:16px; font-weight:700; background:transparent; border:none;");
     tbl->addWidget(title); tbl->addStretch();
 
@@ -1550,11 +1525,11 @@ QWidget* MainWindow::buildProfilePanel()
     scroll->setStyleSheet("QScrollArea { border:none; background:transparent; }");
 
     auto *content = new QWidget;
-    // <--- DELETE THIS LINE: content->setStyleSheet(QString("background:%1;").arg(bg()));
+
     auto *cl = new QVBoxLayout(content);
     cl->setContentsMargins(24, 20, 24, 20); cl->setSpacing(12);
 
-    // ── Profile card ─────────────────────────────────────────────
+    // ── Profile card ──
     auto *pcard = new QFrame;
     pcard->setObjectName("cardFrame");
     auto *pcl = new QVBoxLayout(pcard);
@@ -1644,7 +1619,82 @@ QWidget* MainWindow::buildProfilePanel()
         QMessageBox::information(this, "Activity Log", log);
     });
 
-    actRow->addWidget(editBtn); actRow->addWidget(expBtn); actRow->addWidget(logBtn);
+    // ─ Delete Account button ─
+    auto *delAccBtn = new QPushButton("Delete Account");
+    delAccBtn->setFixedHeight(36);
+    delAccBtn->setStyleSheet(
+        "QPushButton { background:#CC0000; color:#FFFFFF; border:none; "
+        "border-radius:6px; font-size:13px; font-weight:600; padding:0 16px; }"
+        "QPushButton:hover { background:#FF0000; }");
+    connect(delAccBtn, &QPushButton::clicked, this, [=]() {
+        // Step 1 — Confirm with the user
+        QMessageBox confirm;
+        confirm.setWindowTitle("Delete Account");
+        confirm.setText(
+            QString("Are you sure you want to permanently delete your account <b>%1</b>?").arg(me));
+        confirm.setInformativeText(
+            "This will delete all your posts, comments, likes, messages, "
+            "friendships and activity. This cannot be undone.");
+        confirm.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
+        confirm.setDefaultButton(QMessageBox::Cancel);
+        confirm.setIcon(QMessageBox::Warning);
+        if (confirm.exec() != QMessageBox::Yes) return;
+
+        // Step 2 — Ask for password to verify identity
+        bool ok;
+        QString pwd = QInputDialog::getText(
+            this, "Confirm Password",
+            "Enter your password to confirm deletion:",
+            QLineEdit::Password, "", &ok);
+        if (!ok || pwd.isEmpty()) return;
+
+        QString hash = QString(
+            QCryptographicHash::hash(pwd.toUtf8(),
+                                     QCryptographicHash::Sha256).toHex());
+        QSqlQuery chk;
+        chk.prepare("SELECT 1 FROM users WHERE username=:u AND password_hash=:h");
+        chk.bindValue(":u", me); chk.bindValue(":h", hash);
+        chk.exec();
+        if (!chk.next()) {
+            QMessageBox::warning(this, "Wrong Password",
+                                 "Password incorrect. Account not deleted.");
+            return;
+        }
+
+        // Step 3 — Delete all user data from every table
+        QSqlDatabase::database().transaction();
+        QStringList deleteQueries = {
+            QString("DELETE FROM post_likes      WHERE username='%1'").arg(me),
+            QString("DELETE FROM comments        WHERE author_username='%1'").arg(me),
+            QString("DELETE FROM messages        WHERE sender_username='%1' OR receiver_username='%1'").arg(me).arg(me),
+            QString("DELETE FROM friendships     WHERE username='%1' OR friend_username='%1'").arg(me).arg(me),
+            QString("DELETE FROM activity_log    WHERE username='%1'").arg(me),
+            QString("DELETE FROM posts           WHERE author_username='%1'").arg(me),
+            QString("DELETE FROM users           WHERE username='%1'").arg(me)
+        };
+        bool allOk = true;
+        for (const QString &sql : deleteQueries) {
+            QSqlQuery q;
+            if (!q.exec(sql)) { allOk = false; break; }
+        }
+
+        if (!allOk) {
+            QSqlDatabase::database().rollback();
+            QMessageBox::critical(this, "Error",
+                                  "Something went wrong. Account was NOT deleted.");
+            return;
+        }
+        QSqlDatabase::database().commit();
+
+        // Step 4 — Log out and go back to login screen
+        QMessageBox::information(this, "Account Deleted",
+                                 "Your account has been permanently deleted.");
+        me.clear();
+        stack->setCurrentIndex(0);   // back to Login page
+    });
+
+    actRow->addWidget(editBtn); actRow->addWidget(expBtn);
+    actRow->addWidget(logBtn);  actRow->addWidget(delAccBtn);
     actRow->addStretch();
 
     infoLay->addWidget(profUser);
@@ -1655,15 +1705,15 @@ QWidget* MainWindow::buildProfilePanel()
     infoLay->addWidget(div);
     infoLay->addSpacing(8);
     infoLay->addLayout(actRow);
-    // ── Absolute Positioned Avatar ───────────────────────────────
+    // ── Absolute Positioned Avatar ──
     auto *av = new QLabel(pcard); // Parented directly to pcard for absolute positioning
     av->setObjectName("profileAvatar");
     av->setAlignment(Qt::AlignCenter);
 
-    // Size = 78x78 (72px image + 3px left border + 3px right border)
+    // Size = 78x78
     av->setFixedSize(78, 78);
 
-    // Move it to overlap exactly (x=24, y = 100 banner height - 39 half height)
+    // Move it to overlap exactly
     av->move(24, 61);
     av->setStyleSheet(
         QString("border:3px solid %1; border-radius:39px; background:transparent;").arg(card()));
@@ -1706,9 +1756,8 @@ void MainWindow::refreshProfile()
     }
 }
 
-// ════════════════════════════════════════════════════════════════
+
 //  UTILITIES
-// ════════════════════════════════════════════════════════════════
 QString MainWindow::hashPw(const QString &p)
 {
     return QString(QCryptographicHash::hash(p.toUtf8(), QCryptographicHash::Sha256).toHex());
